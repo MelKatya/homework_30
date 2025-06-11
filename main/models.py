@@ -2,7 +2,7 @@ from typing import Any, Dict
 
 from sqlalchemy.orm import relationship
 
-from .database import db, Model
+from .database import Model, db
 
 
 class Client(Model):
