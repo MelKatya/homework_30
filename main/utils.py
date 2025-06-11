@@ -47,9 +47,10 @@ def check_parking_exists(parking_id: int) -> Parking | None:
 
 
 def check_parking_open(parking_id: int) -> bool:
-    parking = db.session.query(Parking)\
+    query: Query = db.session.query(Parking)\
         .filter(Parking.id == parking_id)
-    return parking.one().opened
+    parking = query.one()
+    return parking.opened
 
 
 def get_all_client_parkings():
@@ -58,11 +59,13 @@ def get_all_client_parkings():
 
 
 def change_available_places(parking_id: int, delta: Literal[-1, 1]) -> bool:
-    parking = db.session.query(Parking).filter(Parking.id == parking_id)
-    if parking.one().count_available_places <= 0 and delta == -1:
+    query: Query = db.session.query(Parking).filter(Parking.id == parking_id)
+    parking = query.one()
+
+    if parking.count_available_places <= 0 and delta == -1:
         return False
 
-    parking.one().count_available_places += delta
+    parking.count_available_places += delta
     return True
 
 
