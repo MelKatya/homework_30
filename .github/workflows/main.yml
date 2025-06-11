@@ -28,6 +28,9 @@ jobs:
       - name: Run Pytest
         run: pytest tests/
 
+      - name: Upgrade markupsafe
+        run: pip install --upgrade markupsafe
+
       - name: Run MyPy
         run: mypy . --ignore-missing-imports
 
