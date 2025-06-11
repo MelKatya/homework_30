@@ -32,7 +32,9 @@ class Parking(db.Model):
 class ClientParking(db.Model):
     __tablename__ = "client_parking"
     __table_args__ = (
-        db.UniqueConstraint("client_id", "parking_id", name="unique_client_parking"),
+        db.UniqueConstraint("client_id",
+                            "parking_id",
+                            name="unique_client_parking"),
     )
 
     id = db.Column(db.Integer, primary_key=True)
