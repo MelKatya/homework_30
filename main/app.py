@@ -5,10 +5,7 @@ from flask import Flask
 
 from .database import db
 from .route import app_route
-from .schemas import (ClientParkingSchema,
-                      ClientSchema,
-                      ClientSchemaId,
-                      ParkingSchema)
+from .schemas import ClientParkingSchema, ClientSchema, ClientSchemaId, ParkingSchema
 
 
 def create_app():
@@ -28,10 +25,7 @@ def create_app():
 
     template = spec.to_flasgger(
         app,
-        definitions=[ClientSchema,
-                     ClientSchemaId,
-                     ParkingSchema,
-                     ClientParkingSchema],
+        definitions=[ClientSchema, ClientSchemaId, ParkingSchema, ClientParkingSchema],
     )
     Swagger(app, template=template)
 

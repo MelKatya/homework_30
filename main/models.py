@@ -2,10 +2,10 @@ from typing import Any, Dict
 
 from sqlalchemy.orm import relationship
 
-from .database import db
+from .database import Model, db
 
 
-class Client(db.Model):
+class Client(Model):
     __tablename__ = "client"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
@@ -14,10 +14,13 @@ class Client(db.Model):
     car_number = db.Column(db.String(10))
 
     def to_json(self) -> Dict[str, Any]:
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        return {
+            c.name: getattr(self, c.name)
+            for c in self.__table__.columns  # type: ignore[attr-defined]
+        }
 
 
-class Parking(db.Model):
+class Parking(Model):
     __tablename__ = "parking"
     id = db.Column(db.Integer, primary_key=True)
     address = db.Column(db.String(100), nullable=False)
@@ -26,15 +29,16 @@ class Parking(db.Model):
     count_available_places = db.Column(db.Integer, nullable=False)
 
     def to_json(self) -> Dict[str, Any]:
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        return {
+            c.name: getattr(self, c.name)
+            for c in self.__table__.columns  # type: ignore[attr-defined]
+        }
 
 
-class ClientParking(db.Model):
+class ClientParking(Model):
     __tablename__ = "client_parking"
     __table_args__ = (
-        db.UniqueConstraint("client_id",
-                            "parking_id",
-                            name="unique_client_parking"),
+        db.UniqueConstraint("client_id", "parking_id", name="unique_client_parking"),
     )
 
     id = db.Column(db.Integer, primary_key=True)

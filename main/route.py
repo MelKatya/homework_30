@@ -6,12 +6,7 @@ from flask import Blueprint, request
 from flask_restx import Api, Resource
 from marshmallow import ValidationError
 
-from .schemas import (
-    ClientParkingSchema,
-    ClientSchema,
-    ClientSchemaId,
-    ParkingSchema
-)
+from .schemas import ClientParkingSchema, ClientSchema, ClientSchemaId, ParkingSchema
 from .utils import (
     add_client,
     add_client_parking,
@@ -35,8 +30,12 @@ class ClientList(Resource):
         return schema.dump(get_all_client(), many=True), 200
 
     @swag_from("docs/clients_post.yml")
-    def post(self) -> tuple[dict, int]:
-        data = request.json
+    def post(self) -> tuple[list[str] | list[Any] | dict[Any, Any], int]:
+        raw_data = request.get_json()
+        if raw_data is None:
+            return {"error": "No data provided"}, 400
+
+        data: dict[str, Any] = raw_data
 
         schema = ClientSchema()
         try:
@@ -52,7 +51,7 @@ class ClientList(Resource):
 @api.route("/clients/<int:id>")
 class BookListId(Resource):
     @swag_from("docs/clients_id_get.yml")
-    def get(self, id) -> tuple[dict, int]:
+    def get(self, id) -> tuple[Any, int]:
 
         data = {"id": id}
         schema = ClientSchemaId()
@@ -61,8 +60,8 @@ class BookListId(Resource):
         except ValidationError as exc:
             return exc.messages, 404
 
-        book = get_client_by_id(id)
-        return schema.dump(book.to_json()), 200
+        client = get_client_by_id(id)
+        return schema.dump(client), 200
 
 
 @api.route("/parkings")
@@ -73,8 +72,13 @@ class ParkingList(Resource):
         return schema.dump(get_all_parkings(), many=True), 200
 
     @swag_from("docs/parkings_post.yml")
-    def post(self) -> tuple[dict, int]:
-        data = request.json
+    def post(self) -> tuple[list[str] | list[Any] | dict[Any, Any], int]:
+        raw_data = request.get_json()
+
+        if raw_data is None:
+            return {"error": "No data provided"}, 400
+
+        data: dict[str, Any] = raw_data
 
         schema = ParkingSchema()
         try:
@@ -96,7 +100,12 @@ class ClientParkingList(Resource):
 
     @swag_from("docs/client_parkings_post.yml")
     def post(self) -> tuple[Any, int] | tuple[str, int]:
-        data = request.json
+        raw_data = request.get_json()
+
+        if raw_data is None:
+            return {"error": "No data provided"}, 400
+
+        data: dict[str, Any] = raw_data
 
         schema = ClientParkingSchema()
         try:
@@ -110,15 +119,19 @@ class ClientParkingList(Resource):
             return schema.dump(parking), 201
 
         except sqlalchemy.exc.IntegrityError:
-            return {"error": "The client is already parked "
-                             "in this parking lot"}, 400
+            return {"error": "The client is already parked in this parking lot"}, 400
 
         except ArithmeticError:
             return {"message": "There is no available places"}, 400
 
     @swag_from("docs/client_parkings_delete.yml")
     def delete(self) -> tuple[Any, int] | tuple[str, int]:
-        data = request.json
+        raw_data = request.get_json()
+
+        if raw_data is None:
+            return {"error": "No data provided"}, 400
+
+        data: dict[str, Any] = raw_data
 
         schema = ClientParkingSchema()
         try:
@@ -128,8 +141,7 @@ class ClientParkingList(Resource):
             return exc.messages, 400
 
         try:
-            payment = delete_client_parking(data["client_id"],
-                                            data["parking_id"])
+            payment = delete_client_parking(data["client_id"], data["parking_id"])
 
             if payment is not None:
                 return {
@@ -140,13 +152,12 @@ class ClientParkingList(Resource):
             else:
                 return {
                     "error": f"The client with id={data['client_id']} "
-                             f"didn't park "
-                             f"in the parking lot with id={data['parking_id']}"
+                    f"didn't park "
+                    f"in the parking lot with id={data['parking_id']}"
                 }, 400
 
         except UserWarning:
             return {"message": "The client doesn't have a bank card"}, 400
 
         except KeyError:
-            return {"message": "The client has already "
-                               "left this parking lot"}, 400
+            return {"message": "The client has already left this parking lot"}, 400

@@ -1,6 +1,8 @@
 from datetime import datetime
 from typing import Literal
 
+from flask_sqlalchemy.query import Query
+
 from .database import db
 from .models import Client, ClientParking, Parking
 
@@ -16,9 +18,9 @@ def add_client(client: Client) -> Client:
     return client
 
 
-def get_client_by_id(client_id: int):
-    return db.session.query(Client).\
-        filter(Client.id == client_id).one_or_none()
+def get_client_by_id(client_id: int) -> Client | None:
+    query: Query = db.session.query(Client).filter(Client.id == client_id)
+    return query.one_or_none()
 
 
 def get_all_parkings():
@@ -32,18 +34,19 @@ def add_parking(parking: Parking) -> Parking:
     return parking
 
 
-def check_client_exists(client_id: int) -> bool:
-    return db.session.query(Client).where(Client.id == client_id).one_or_none()
+def check_client_exists(client_id: int) -> Client | None:
+    query: Query = db.session.query(Client).filter(Client.id == client_id)
+    return query.one_or_none()
 
 
-def check_parking_exists(parking_id: int) -> bool:
-    return db.session.query(Parking).\
-        where(Parking.id == parking_id).one_or_none()
+def check_parking_exists(parking_id: int) -> Parking | None:
+    query: Query = db.session.query(Parking).filter(Parking.id == parking_id)
+    return query.one_or_none()
 
 
 def check_parking_open(parking_id: int) -> bool:
-    parking = db.session.query(Parking)\
-        .where(Parking.id == parking_id).one()
+    query: Query = db.session.query(Parking).filter(Parking.id == parking_id)
+    parking = query.one()
     return parking.opened
 
 
@@ -53,7 +56,9 @@ def get_all_client_parkings():
 
 
 def change_available_places(parking_id: int, delta: Literal[-1, 1]) -> bool:
-    parking = db.session.query(Parking).where(Parking.id == parking_id).one()
+    query: Query = db.session.query(Parking).filter(Parking.id == parking_id)
+    parking = query.one()
+
     if parking.count_available_places <= 0 and delta == -1:
         return False
 
@@ -71,11 +76,10 @@ def add_client_parking(new_parking: ClientParking) -> ClientParking | None:
 
 
 def delete_client_parking(client_id: int, parking_id: int):
-    client_parking = (
-        db.session.query(ClientParking)
-        .filter_by(client_id=client_id, parking_id=parking_id)
-        .first()
+    query: Query = db.session.query(ClientParking).filter_by(
+        client_id=client_id, parking_id=parking_id
     )
+    client_parking = query.first()
 
     if not client_parking:
         return None

@@ -35,8 +35,7 @@ class ClientSchemaId(ClientSchema):
     def validate_id(self, id: int) -> None:
         client = get_client_by_id(id)
         if not client:
-            raise ValidationError("Client with id={id} not found."
-                                  .format(id=id))
+            raise ValidationError("Client with id={id} not found.".format(id=id))
 
 
 class ParkingSchema(Schema):
