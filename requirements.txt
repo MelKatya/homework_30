@@ -1,7 +1,7 @@
-black==21.12b0
-flake8==4.0.1
-flake8-bugbear==22.1.11
-flake8-pie==0.15.0
+black==25.1.0
+flake8==7.2.0
+flake8-bugbear==24.12.12
+flake8-pie==0.16.0
 isort==5.9.3
 mypy==0.981
 flask==2.2.5
