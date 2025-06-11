@@ -33,8 +33,11 @@ jobs:
       - name: Run Pytest
         run: pytest tests/
 
+      - name: Clear mypy cache
+        run: rm -rf .mypy_cache
+
       - name: Run MyPy
-        run: mypy . --ignore-missing-imports --no-cache-dir
+        run: mypy . --ignore-missing-imports
 
       - name: Run Black
         run: black --check --diff .
