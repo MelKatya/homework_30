@@ -32,11 +32,11 @@ def add_parking(parking: Parking) -> Parking:
     return parking
 
 
-def check_client_exists(client_id: int) -> bool:
+def check_client_exists(client_id: int) -> Client | None:
     return db.session.query(Client).where(Client.id == client_id).one_or_none()
 
 
-def check_parking_exists(parking_id: int) -> bool:
+def check_parking_exists(parking_id: int) -> Parking | None:
     return db.session.query(Parking).\
         where(Parking.id == parking_id).one_or_none()
 

@@ -35,8 +35,12 @@ class ClientList(Resource):
         return schema.dump(get_all_client(), many=True), 200
 
     @swag_from("docs/clients_post.yml")
-    def post(self) -> tuple[dict, int]:
-        data = request.json
+    def post(self) -> tuple[list[str] | list[Any] | dict[Any, Any], int]:
+        raw_data = request.get_json()
+        if raw_data is None:
+            return {"error": "No data provided"}, 400
+
+        data: dict[str, Any] = raw_data
 
         schema = ClientSchema()
         try:
@@ -52,7 +56,7 @@ class ClientList(Resource):
 @api.route("/clients/<int:id>")
 class BookListId(Resource):
     @swag_from("docs/clients_id_get.yml")
-    def get(self, id) -> tuple[dict, int]:
+    def get(self, id) -> tuple[Any, int]:
 
         data = {"id": id}
         schema = ClientSchemaId()
@@ -73,8 +77,13 @@ class ParkingList(Resource):
         return schema.dump(get_all_parkings(), many=True), 200
 
     @swag_from("docs/parkings_post.yml")
-    def post(self) -> tuple[dict, int]:
-        data = request.json
+    def post(self) -> tuple[list[str] | list[Any] | dict[Any, Any], int]:
+        raw_data = request.get_json()
+
+        if raw_data is None:
+            return {"error": "No data provided"}, 400
+
+        data: dict[str, Any] = raw_data
 
         schema = ParkingSchema()
         try:
@@ -96,7 +105,12 @@ class ClientParkingList(Resource):
 
     @swag_from("docs/client_parkings_post.yml")
     def post(self) -> tuple[Any, int] | tuple[str, int]:
-        data = request.json
+        raw_data = request.get_json()
+
+        if raw_data is None:
+            return {"error": "No data provided"}, 400
+
+        data: dict[str, Any] = raw_data
 
         schema = ClientParkingSchema()
         try:
@@ -118,7 +132,12 @@ class ClientParkingList(Resource):
 
     @swag_from("docs/client_parkings_delete.yml")
     def delete(self) -> tuple[Any, int] | tuple[str, int]:
-        data = request.json
+        raw_data = request.get_json()
+
+        if raw_data is None:
+            return {"error": "No data provided"}, 400
+
+        data: dict[str, Any] = raw_data
 
         schema = ClientParkingSchema()
         try:
