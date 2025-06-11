@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: ["*"]
+  pull_request:
+    branches: ["*"]
+
+jobs:
+  test-and-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10.11
+
+      - name: Install base dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade markupsafe
+
+      - name: Install dev tools
+        run: |
+          pip install -r requirements.txt
+          pip install black isort flake8 mypy pytest
+
+      - name: Run Pytest
+        run: pytest tests/
+
+      - name: Clear mypy cache
+        run: rm -rf .mypy_cache
+
+      - name: Run MyPy
+        run: mypy . --config-file mypy.ini
+
+      - name: Run Black
+        run: black --check --diff .
+
+      - name: Run Isort
+        run: isort --check-only .
+
+      - name: Run Flake8
+        run: flake8 .
