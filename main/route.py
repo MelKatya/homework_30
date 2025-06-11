@@ -65,8 +65,8 @@ class BookListId(Resource):
         except ValidationError as exc:
             return exc.messages, 404
 
-        book = get_client_by_id(id)
-        return schema.dump(book.to_json()), 200
+        client = get_client_by_id(id)
+        return schema.dump(client), 200
 
 
 @api.route("/parkings")
