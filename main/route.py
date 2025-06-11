@@ -119,7 +119,7 @@ class ClientParkingList(Resource):
             return schema.dump(parking), 201
 
         except sqlalchemy.exc.IntegrityError:
-            return {"error": "The client is already parked " "in this parking lot"}, 400
+            return {"error": "The client is already parked in this parking lot"}, 400
 
         except ArithmeticError:
             return {"message": "There is no available places"}, 400
@@ -160,4 +160,4 @@ class ClientParkingList(Resource):
             return {"message": "The client doesn't have a bank card"}, 400
 
         except KeyError:
-            return {"message": "The client has already " "left this parking lot"}, 400
+            return {"message": "The client has already left this parking lot"}, 400

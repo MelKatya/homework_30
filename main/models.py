@@ -15,8 +15,9 @@ class Client(Model):
 
     def to_json(self) -> Dict[str, Any]:
         return {
-            c.name: getattr(self, c.name) for c in self.__table__.columns
-        }  # type: ignore[attr-defined]
+            c.name: getattr(self, c.name)
+            for c in self.__table__.columns  # type: ignore[attr-defined]
+        }
 
 
 class Parking(Model):
@@ -29,8 +30,9 @@ class Parking(Model):
 
     def to_json(self) -> Dict[str, Any]:
         return {
-            c.name: getattr(self, c.name) for c in self.__table__.columns
-        }  # type: ignore[attr-defined]
+            c.name: getattr(self, c.name)
+            for c in self.__table__.columns  # type: ignore[attr-defined]
+        }
 
 
 class ClientParking(Model):
