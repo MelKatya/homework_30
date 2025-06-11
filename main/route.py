@@ -6,12 +6,7 @@ from flask import Blueprint, request
 from flask_restx import Api, Resource
 from marshmallow import ValidationError
 
-from .schemas import (
-    ClientParkingSchema,
-    ClientSchema,
-    ClientSchemaId,
-    ParkingSchema
-)
+from .schemas import ClientParkingSchema, ClientSchema, ClientSchemaId, ParkingSchema
 from .utils import (
     add_client,
     add_client_parking,
@@ -124,8 +119,7 @@ class ClientParkingList(Resource):
             return schema.dump(parking), 201
 
         except sqlalchemy.exc.IntegrityError:
-            return {"error": "The client is already parked "
-                             "in this parking lot"}, 400
+            return {"error": "The client is already parked " "in this parking lot"}, 400
 
         except ArithmeticError:
             return {"message": "There is no available places"}, 400
@@ -147,8 +141,7 @@ class ClientParkingList(Resource):
             return exc.messages, 400
 
         try:
-            payment = delete_client_parking(data["client_id"],
-                                            data["parking_id"])
+            payment = delete_client_parking(data["client_id"], data["parking_id"])
 
             if payment is not None:
                 return {
@@ -159,13 +152,12 @@ class ClientParkingList(Resource):
             else:
                 return {
                     "error": f"The client with id={data['client_id']} "
-                             f"didn't park "
-                             f"in the parking lot with id={data['parking_id']}"
+                    f"didn't park "
+                    f"in the parking lot with id={data['parking_id']}"
                 }, 400
 
         except UserWarning:
             return {"message": "The client doesn't have a bank card"}, 400
 
         except KeyError:
-            return {"message": "The client has already "
-                               "left this parking lot"}, 400
+            return {"message": "The client has already " "left this parking lot"}, 400

@@ -19,8 +19,7 @@ def add_client(client: Client) -> Client:
 
 
 def get_client_by_id(client_id: int) -> Client | None:
-    query: Query = db.session.query(Client).\
-        filter(Client.id == client_id)
+    query: Query = db.session.query(Client).filter(Client.id == client_id)
     return query.one_or_none()
 
 
@@ -41,14 +40,12 @@ def check_client_exists(client_id: int) -> Client | None:
 
 
 def check_parking_exists(parking_id: int) -> Parking | None:
-    query: Query = db.session.query(Parking).\
-        filter(Parking.id == parking_id)
+    query: Query = db.session.query(Parking).filter(Parking.id == parking_id)
     return query.one_or_none()
 
 
 def check_parking_open(parking_id: int) -> bool:
-    query: Query = db.session.query(Parking)\
-        .filter(Parking.id == parking_id)
+    query: Query = db.session.query(Parking).filter(Parking.id == parking_id)
     parking = query.one()
     return parking.opened
 
@@ -79,9 +76,8 @@ def add_client_parking(new_parking: ClientParking) -> ClientParking | None:
 
 
 def delete_client_parking(client_id: int, parking_id: int):
-    query: Query = (
-        db.session.query(ClientParking)
-        .filter_by(client_id=client_id, parking_id=parking_id)
+    query: Query = db.session.query(ClientParking).filter_by(
+        client_id=client_id, parking_id=parking_id
     )
     client_parking = query.first()
 
