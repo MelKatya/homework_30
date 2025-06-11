@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ "*" ]
+    branches: ["*"]
   pull_request:
-    branches: [ "*" ]
+    branches: ["*"]
 
 jobs:
   test-and-lint:
@@ -36,7 +36,7 @@ jobs:
         run: rm -rf .mypy_cache
 
       - name: Run MyPy
-        run: mypy . --config-file mypy.ini --exclude '/opt/hostedtoolcache'
+        run: mypy . --config-file mypy.ini
 
       - name: Run Black
         run: black --check --diff .
