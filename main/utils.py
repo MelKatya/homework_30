@@ -73,7 +73,7 @@ def add_client_parking(new_parking: ClientParking) -> ClientParking | None:
 def delete_client_parking(client_id: int, parking_id: int):
     client_parking = (
         db.session.query(ClientParking)
-        .filter(client_id=client_id, parking_id=parking_id)
+        .filter_by(client_id=client_id, parking_id=parking_id)
         .first()
     )
 
